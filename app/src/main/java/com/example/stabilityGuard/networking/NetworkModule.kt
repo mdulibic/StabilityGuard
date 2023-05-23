@@ -1,5 +1,6 @@
 package com.example.stabilityGuard.networking
 
+import com.example.stabilityGuard.utils.SessionManager
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.Moshi
@@ -35,14 +36,25 @@ object NetworkModule {
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(okHttpClient)
-            .baseUrl("http://10.0.2.2:8080")
+            .baseUrl("https://your-thingsboard-url/api/")
             .build()
     }
 
     @Provides
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(sessionManager: SessionManager): OkHttpClient {
         return OkHttpClient()
             .newBuilder()
+            .addInterceptor(
+                Interceptor {
+                    val token = sessionManager.token
+
+                    val newRequest = it.request().newBuilder()
+                        .addHeader("Authorization", "Bearer $token")
+                        .build()
+
+                    it.proceed(newRequest)
+                },
+            )
             .addInterceptor(loggingInterceptor())
             .build()
     }
