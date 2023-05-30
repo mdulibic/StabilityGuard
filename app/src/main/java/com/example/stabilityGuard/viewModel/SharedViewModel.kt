@@ -13,7 +13,7 @@ import javax.inject.Inject
  * used for navigation
  */
 @HiltViewModel
-class SharedViewModel @Inject constructor(): ViewModel() {
+class SharedViewModel @Inject constructor() : ViewModel() {
 
     private val _navCommand = MutableLiveData<Event<NavCommand>>()
     val navCommand: LiveData<Event<NavCommand>> = _navCommand

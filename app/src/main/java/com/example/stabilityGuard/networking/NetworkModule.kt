@@ -36,7 +36,7 @@ object NetworkModule {
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(okHttpClient)
-            .baseUrl("https://your-thingsboard-url/api/")
+            .baseUrl("http://161.53.19.19:45080/api/")
             .build()
     }
 

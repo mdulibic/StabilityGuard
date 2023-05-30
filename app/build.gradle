@@ -7,7 +7,6 @@ plugins {
 }
 
 android {
-    namespace 'com.example.stabilityGuard'
     compileSdk 33
 
     defaultConfig {
