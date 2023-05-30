@@ -24,7 +24,6 @@
     </style>
 
     <style name="CustomTextView" parent="Widget.AppCompat.TextView">
-        <item name="android:paddingStart">16dp</item>
         <item name="android:textSize">16sp</item>
     </style>
 </resources>
