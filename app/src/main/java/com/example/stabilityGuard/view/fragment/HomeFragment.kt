@@ -66,7 +66,15 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), SwipeRefreshLayout.On
     }
 
     private fun initRecyclerView() {
-        alarmAdapter = AlarmAdapter()
+        alarmAdapter = AlarmAdapter(
+            onItemAck = {
+                viewModel.ackAlarm(alarmId = it)
+            },
+            onItemCleared = {
+                viewModel.clearAlarm(alarmId = it)
+            },
+
+        )
         val decoration =
             VerticalSpaceItemDecorator(resources.getInteger(R.integer.margin_tv_item).toPx())
         binding.rvAlarms.apply {

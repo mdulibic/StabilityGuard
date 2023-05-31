@@ -42,6 +42,7 @@ class HomeViewModel @Inject constructor(
                 val alarms = it.data.map {
                     it.toAlarm()
                 }
+                // .filterNot { it.status == AlarmStatus.CLEARED_UNACK || it.status == AlarmStatus.CLEARED_ACK }
                 _alarmsSuccess.value = alarms
             }
         }
@@ -78,6 +79,18 @@ class HomeViewModel @Inject constructor(
     fun checkUserStatus() {
         sessionManager.token?.let {
             _loginSuccess.value = Unit
+        }
+    }
+
+    fun ackAlarm(alarmId: String) {
+        viewModelScope.launch {
+            repository.ackAlarm(alarmId = alarmId)
+        }
+    }
+
+    fun clearAlarm(alarmId: String) {
+        viewModelScope.launch {
+            repository.clearAlarm(alarmId = alarmId)
         }
     }
 

@@ -15,4 +15,12 @@ class StabilityRepository @Inject constructor(private val apiService: StabilityG
     suspend fun loginUser(user: User): Response<TokenResponse> {
         return apiService.loginUser(user)
     }
+
+    suspend fun ackAlarm(alarmId: String): Response<Unit> {
+        return apiService.acknowledgeAlarm(alarmId = alarmId)
+    }
+
+    suspend fun clearAlarm(alarmId: String): Response<Unit> {
+        return apiService.clearAlarm(alarmId = alarmId)
+    }
 }
