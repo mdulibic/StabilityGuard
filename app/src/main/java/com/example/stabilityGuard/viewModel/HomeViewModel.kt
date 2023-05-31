@@ -42,9 +42,19 @@ class HomeViewModel @Inject constructor(
                 val alarms = it.data.map {
                     it.toAlarm()
                 }
-                // .filterNot { it.status == AlarmStatus.CLEARED_UNACK || it.status == AlarmStatus.CLEARED_ACK }
+                    .filterNot { it.status == AlarmStatus.CLEARED_UNACK || it.status == AlarmStatus.CLEARED_ACK }
                 _alarmsSuccess.value = alarms
             }
+        }
+    }
+
+    fun updateAttributes(attributes: Map<String, Any>) {
+        viewModelScope.launch {
+            repository.saveDeviceAttributes(
+                attributes = attributes,
+                deviceId = "b51f6400-f4d8-11ed-993d-8d74c2abdddd",
+                scope = "SHARED_SCOPE",
+            )
         }
     }
 
@@ -90,7 +100,8 @@ class HomeViewModel @Inject constructor(
 
     fun clearAlarm(alarmId: String) {
         viewModelScope.launch {
-            repository.clearAlarm(alarmId = alarmId)
+            val result = repository.clearAlarm(alarmId = alarmId)
+            if (result.isSuccessful) updateAttributes(attributes = mapOf("ledState" to 1))
         }
     }
 

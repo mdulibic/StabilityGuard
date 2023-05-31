@@ -25,4 +25,12 @@ interface StabilityGuardApiService {
 
     @POST("alarm/{alarmId}/clear")
     suspend fun clearAlarm(@Path("alarmId") alarmId: String): Response<Unit>
+
+    @POST("plugins/telemetry/{deviceId}/{scope}")
+    @JvmSuppressWildcards
+    suspend fun saveDeviceAttributes(
+        @Path("deviceId") deviceId: String,
+        @Path("scope") scope: String,
+        @Body attributes: Map<String, Any>,
+    ): Response<Unit>
 }
