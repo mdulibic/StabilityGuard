@@ -41,7 +41,7 @@ class HomeViewModel @Inject constructor(
     val emailIntent: LiveData<Intent>
         get() = _emailIntent
 
-    private var isSurveillanceEnabled = true
+    private var isSurveillanceEnabled = false
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getAlarms() {
@@ -54,7 +54,7 @@ class HomeViewModel @Inject constructor(
                     .filterNot { it.status == AlarmStatus.CLEARED_UNACK || it.status == AlarmStatus.CLEARED_ACK }
                     .sortedBy { SimpleDateFormat("dd-MM-yyyy").parse(it.timestamp) }
                 _alarmsSuccess.value = alarms
-                val activeAlarm = alarms.find { it.status == AlarmStatus.ACTIVE_ACK }
+                val activeAlarm = alarms.find { it.status == AlarmStatus.ACTIVE_UNACK }
                 activeAlarm?.let {
                     if (isSurveillanceEnabled) sendAlertEmail(alarm = activeAlarm)
                 }
