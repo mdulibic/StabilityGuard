@@ -1,5 +1,7 @@
 package com.example.stabilityGuard.viewModel
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
@@ -14,6 +16,7 @@ import com.example.stabilityGuard.networking.StabilityRepository
 import com.example.stabilityGuard.utils.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -34,6 +37,12 @@ class HomeViewModel @Inject constructor(
     val loginSuccess: LiveData<Unit>
         get() = _loginSuccess
 
+    private val _emailIntent = MutableLiveData<Intent>()
+    val emailIntent: LiveData<Intent>
+        get() = _emailIntent
+
+    private var isSurveillanceEnabled = true
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun getAlarms() {
         viewModelScope.launch {
@@ -43,9 +52,27 @@ class HomeViewModel @Inject constructor(
                     it.toAlarm()
                 }
                     .filterNot { it.status == AlarmStatus.CLEARED_UNACK || it.status == AlarmStatus.CLEARED_ACK }
+                    .sortedBy { SimpleDateFormat("dd-MM-yyyy").parse(it.timestamp) }
                 _alarmsSuccess.value = alarms
+                val activeAlarm = alarms.find { it.status == AlarmStatus.ACTIVE_ACK }
+                activeAlarm?.let {
+                    if (isSurveillanceEnabled) sendAlertEmail(alarm = activeAlarm)
+                }
             }
         }
+    }
+
+    fun sendAlertEmail(alarm: Alarm) {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf("marta.dulibic@fer.hr"))
+            putExtra(Intent.EXTRA_SUBJECT, alarm.name)
+            putExtra(
+                Intent.EXTRA_TEXT,
+                "The person fell on ${alarm.timestamp}. Send an ambulance!",
+            )
+        }
+        _emailIntent.value = intent
     }
 
     fun updateAttributes(attributes: Map<String, Any>) {
@@ -56,6 +83,11 @@ class HomeViewModel @Inject constructor(
                 scope = "SHARED_SCOPE",
             )
         }
+    }
+
+    fun setSurveillance(isEnabled: Boolean) {
+        isSurveillanceEnabled = isEnabled
+        updateAttributes(attributes = mapOf("surveillanceState" to isEnabled))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

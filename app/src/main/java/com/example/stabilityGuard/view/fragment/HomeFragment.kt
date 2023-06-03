@@ -16,6 +16,7 @@ import com.example.stabilityGuard.utils.VerticalSpaceItemDecorator
 import com.example.stabilityGuard.utils.toPx
 import com.example.stabilityGuard.viewModel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefreshListener {
@@ -48,11 +49,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), SwipeRefreshLayout.On
         initRecyclerView()
 
         binding.surveillanceSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                // The switch is checked.
-            } else {
-                // The switch isn't checked.
-            }
+            viewModel.setSurveillance(isEnabled = isChecked)
         }
 
         binding.swiperefresh.setOnRefreshListener(this)
@@ -62,6 +59,12 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), SwipeRefreshLayout.On
         viewModel.alarmsSuccess.observe(viewLifecycleOwner) {
             binding.swiperefresh.isRefreshing = false
             alarmAdapter.setData(it)
+        }
+
+        viewModel.emailIntent.observe(viewLifecycleOwner) {
+            Timber.d("Email sent!")
+            it.setPackage("com.google.android.gm")
+            startActivity(it)
         }
     }
 
