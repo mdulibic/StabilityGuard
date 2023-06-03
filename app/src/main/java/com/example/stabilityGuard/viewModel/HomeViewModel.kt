@@ -51,8 +51,7 @@ class HomeViewModel @Inject constructor(
                 val alarms = it.data.map {
                     it.toAlarm()
                 }
-                    .filterNot { it.status == AlarmStatus.CLEARED_UNACK || it.status == AlarmStatus.CLEARED_ACK }
-                    .sortedBy { SimpleDateFormat("dd-MM-yyyy").parse(it.timestamp) }
+                    .sortedByDescending { SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(it.timestamp) }
                 _alarmsSuccess.value = alarms
                 val activeAlarm = alarms.find { it.status == AlarmStatus.ACTIVE_UNACK }
                 activeAlarm?.let {

@@ -17,6 +17,8 @@ import com.example.stabilityGuard.utils.toPx
 import com.example.stabilityGuard.viewModel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.util.Timer
+import kotlin.concurrent.timerTask
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefreshListener {
@@ -42,7 +44,17 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), SwipeRefreshLayout.On
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
-        viewModel.getAlarms()
+        val timer = Timer()
+
+        val interval = 15000L // 15 seconds
+
+        timer.scheduleAtFixedRate(
+            timerTask {
+                viewModel.getAlarms()
+            },
+            0,
+            interval,
+        )
 
         observeLiveData()
 
