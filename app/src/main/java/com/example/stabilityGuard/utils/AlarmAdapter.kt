@@ -36,6 +36,7 @@ class AlarmAdapter(
             this.id = alarm.id
             binding.apply {
                 this.tvId.text = binding.root.context.resources.getString(R.string.id_1_s, alarm.id)
+                this.tvDeviceId.text = binding.root.context.resources.getString(R.string.device_id_1_s, alarm.deviceId)
                 this.tvName.text =
                     binding.root.context.resources.getString(R.string.name_1_s, alarm.name)
                 this.tvTimestamp.text = binding.root.context.resources.getString(

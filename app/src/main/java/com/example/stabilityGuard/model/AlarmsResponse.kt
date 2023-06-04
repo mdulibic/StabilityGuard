@@ -23,7 +23,7 @@ data class AlarmResponse(
     @Json(name = "endTs") val endTs: Long,
     @Json(name = "ackTs") val ackTs: Long,
     @Json(name = "clearTs") val clearTs: Long,
-    @Json(name = "details") val details: Map<String, Any>,
+    @Json(name = "details") val details: Map<String, Any>?,
     @Json(name = "propagate") val propagate: Boolean,
     @Json(name = "propagateToOwner") val propagateToOwner: Boolean,
     @Json(name = "propagateToTenant") val propagateToTenant: Boolean,

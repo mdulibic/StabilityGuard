@@ -93,6 +93,7 @@ class HomeViewModel @Inject constructor(
     fun AlarmResponse.toAlarm(): Alarm {
         return Alarm(
             id = this.id.id,
+            deviceId = this.originator.id,
             name = this.name,
             timestamp = this.createdTime.toTimestamp(),
             status = this.status.toAlarmStatus(),
