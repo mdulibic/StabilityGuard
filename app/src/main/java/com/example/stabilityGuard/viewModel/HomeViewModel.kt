@@ -74,11 +74,11 @@ class HomeViewModel @Inject constructor(
         _emailIntent.value = intent
     }
 
-    fun updateAttributes(attributes: Map<String, Any>) {
+    fun updateAttributes(deviceId: String, attributes: Map<String, Any>) {
         viewModelScope.launch {
             repository.saveDeviceAttributes(
                 attributes = attributes,
-                deviceId = "b51f6400-f4d8-11ed-993d-8d74c2abdddd",
+                deviceId = deviceId,
                 scope = "SHARED_SCOPE",
             )
         }
@@ -86,7 +86,10 @@ class HomeViewModel @Inject constructor(
 
     fun setSurveillance(isEnabled: Boolean) {
         isSurveillanceEnabled = isEnabled
-        updateAttributes(attributes = mapOf("surveillanceState" to isEnabled))
+        updateAttributes(
+            deviceId = "b51f6400-f4d8-11ed-993d-8d74c2abdddd",
+            attributes = mapOf("surveillanceState" to isEnabled),
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -130,10 +133,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun clearAlarm(alarmId: String) {
+    fun clearAlarm(deviceId: String, alarmId: String) {
         viewModelScope.launch {
             val result = repository.clearAlarm(alarmId = alarmId)
-            if (result.isSuccessful) updateAttributes(attributes = mapOf("ledState" to 1))
+            if (result.isSuccessful) {
+                updateAttributes(
+                    deviceId = deviceId,
+                    attributes = mapOf("ledState" to 1),
+                )
+            }
         }
     }
 

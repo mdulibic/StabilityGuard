@@ -12,28 +12,28 @@ import com.example.stabilityGuard.model.AlarmStatus
 class AlarmAdapter(
     private var alarmList: ArrayList<Alarm> = arrayListOf(),
     private val onItemAck: (String) -> Unit,
-    private val onItemCleared: (String) -> Unit,
+    private val onItemCleared: (Alarm) -> Unit,
 ) : RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder>() {
 
     inner class AlarmViewHolder(private val binding: ItemAlarmBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        private var id: String? = null
+        private var alarm: Alarm? = null
 
         private val ackClickListener = View.OnClickListener {
-            if (id == null) return@OnClickListener
+            if (alarm == null) return@OnClickListener
 
-            onItemAck(id!!)
+            onItemAck(alarm!!.id)
         }
 
         private val clearClickListener = View.OnClickListener {
-            if (id == null) return@OnClickListener
+            if (alarm == null) return@OnClickListener
 
-            onItemCleared(id!!)
+            onItemCleared(alarm!!)
         }
 
         fun bind(alarm: Alarm) {
-            this.id = alarm.id
+            this.alarm = alarm
             binding.apply {
                 this.tvId.text = binding.root.context.resources.getString(R.string.id_1_s, alarm.id)
                 this.tvDeviceId.text = binding.root.context.resources.getString(R.string.device_id_1_s, alarm.deviceId)

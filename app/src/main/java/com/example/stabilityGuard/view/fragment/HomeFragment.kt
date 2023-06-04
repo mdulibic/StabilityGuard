@@ -86,7 +86,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), SwipeRefreshLayout.On
                 viewModel.ackAlarm(alarmId = it)
             },
             onItemCleared = {
-                viewModel.clearAlarm(alarmId = it)
+                viewModel.clearAlarm(deviceId = it.deviceId, alarmId = it.id)
             },
 
         )
